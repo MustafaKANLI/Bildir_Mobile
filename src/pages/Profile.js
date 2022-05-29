@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
-import { Text, View, StyleSheet, Button, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity } from "react-native";
 import Logo from '../../assets/images/bildirLogo.png'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Profile = (props) => {
 
@@ -10,16 +11,17 @@ const Profile = (props) => {
 
     const getUser = async () => {
         const token = await AsyncStorage.getItem('token');
+        const role = await AsyncStorage.getItem('role');
 
         if (!token) {
             props.navigation.navigate('Sign In');
             return;
         }
 
-        const role = await AsyncStorage.getItem('role');
 
         const userResponse = await fetch(
-            "https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn",
+            role === "Student" ? "https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn" :
+                "https://bildir.azurewebsites.net/api/v1/Community/CurrentlyLoggedIn",
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -39,7 +41,7 @@ const Profile = (props) => {
 
     const signout = async () => {
         try {
-            props.navigation.navigate('Etkinlikler');
+            props.navigation.navigate('EtkinliklerTab');
 
 
             await AsyncStorage.removeItem('token');
@@ -50,6 +52,10 @@ const Profile = (props) => {
         catch (exception) {
             console.error(exception)
         }
+    }
+
+    const organized = () => {
+        props.navigation.navigate('Organized Events');
     }
 
     const signin = () => {
@@ -72,35 +78,44 @@ const Profile = (props) => {
                     <View style={styles.image} >
                         <ImageBackground source={Logo} resizeMode="cover" style={styles.pp} ></ImageBackground>
                     </View>
+
                     <View style={styles.name}>
-                        {user.userJson && <View>
+                        {user.role === "Student" ? user.userJson && <View>
                             <Text style={styles.userName}>{user.userJson?.data.firstName}{user.userJson?.data.lastName}</Text>
                             <Text>{user.userJson?.data.schoolEmail}</Text>
                             <Text>{user.userJson?.data.department}</Text>
-                        </View>}
+                        </View>
+                            :
+                            user.userJson &&
+                            <Text style={styles.userName}>{user.userJson.data.name}</Text>
+                        }
+
 
                     </View>
 
                 </View>
                 <View style={styles.menu}>
-                    <Button
-                        onPress={participated}
-                        title="Katıldığım Etkinlikler"
-                        color="#841584" />
-                    <Button
-                        onPress={followedCommunities}
-                        title="Takip ettiğim Topluluklar"
-                        color="#841584" />
+
+                    <TouchableOpacity style={styles.margin}
+                        onPress={user.role === "Student" ? participated : organized}
+
+                    ><Text style={styles.buttonText}>{user.role === "Student" ? "Katıldığım Etkinlikler" : "Düzenlediğim Etkinlikler"}</Text></TouchableOpacity>
+                    {user.role === "Student" &&
+                        <TouchableOpacity style={styles.margin}
+                            onPress={followedCommunities}
+
+                        ><Text style={styles.buttonText}>Takip ettiğim Topluluklar</Text></TouchableOpacity>}
+
                     {
                         user.token ? (
-                            <Button
+                            <TouchableOpacity style={styles.margin}
                                 onPress={signout}
-                                title="Çıkış Yap"
-                                color="#841584" />)
-                            : (<Button
+
+                            ><Text style={styles.buttonText}>Çıkış Yap</Text></TouchableOpacity>)
+                            : (<TouchableOpacity style={styles.margin}
                                 onPress={signin}
-                                title="Giriş Yap"
-                                color="#841584" />)
+                            ><Text style={styles.buttonText}>Giriş Yap</Text></TouchableOpacity>
+                            )
                     }
                 </View>
 
@@ -123,10 +138,22 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     menu: {
-        height: 150,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+
         marginTop: 50,
+    },
+    margin: {
+        backgroundColor: "#841584",
+        padding: 10,
+        alignItems: 'center',
+        marginTop: 10,
+
+    },
+    buttonText: {
+
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold'
+
     },
     profileInfo: {
         marginTop: 16,

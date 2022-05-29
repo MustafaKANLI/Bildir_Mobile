@@ -36,7 +36,7 @@ const SignIn = (props) => {
                 await AsyncStorage.setItem('token', json.data.jwToken);
                 await AsyncStorage.setItem('role', json.data.roles[0]);
 
-                props.navigation.navigate('Etkinlikler');
+                props.navigation.navigate('EtkinliklerTab');
             }
         }
         catch (e) {

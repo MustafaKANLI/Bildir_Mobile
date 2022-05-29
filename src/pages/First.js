@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const First = (props) => {
     const [events, setEvents] = useState([]);
     const [user, setUser] = useState({});
+    const [search, setSearch] = useState("");
+
 
     const getUser = async () => {
         const token = await AsyncStorage.getItem('token');
@@ -69,6 +71,8 @@ const First = (props) => {
                     });
 
             setEvents(mappedEvents);
+
+
         } catch (error) {
             console.error(error);
         }
@@ -81,11 +85,41 @@ const First = (props) => {
     );
 
 
+    const onSearchChange = (e) => {
+        setSearch(e);
+    }
+
+    //     filter()
+    // }
+    // const temp = events
+
+    // console.log("sörc", search === "")
+
+    // const filter = async () => {
+    //     if (search === "") {
+    //         console.log("gir artık")
+    //     }
+    //     if (search !== "") {
+    //         const filteredData =
+    //             events.filter((event) => {
+    //                 console.log("ews", event.title.toLowerCase().startsWith(search))
+
+    //                 return event.title.toLowerCase().startsWith(search)
+    //             })
+    //         //await setEvents(filteredData)
+    //     }
+    //     else {
+    //         console.log("sıfırla")
+    //         //await setEvents(temp)
+    //     }
+    // }
+
 
 
     const createEvent = () => {
         props.navigation.navigate('Etkinlik Oluştur');
     }
+
 
     return (
         <View style={styles.container}>
@@ -96,9 +130,8 @@ const First = (props) => {
             </TouchableOpacity>
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic">
-                <Input label='Etkinlik ara' />
+                <Input onChangeText={onSearchChange} label='Etkinlik ara' />
                 {events.map((d, index) => {
-
                     return (< Card key={index} detail={props.navigation} likeButtonActive={true} data={d} user={user} />)
                 })}
             </ScrollView>

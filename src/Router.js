@@ -13,6 +13,7 @@ import CreateEvent from "./pages/CreateEvent";
 import { navigationRef } from './RootNavigation';
 import ParticipatedEvents from "./pages/ParticipatedEvents/ParticipatedEvents";
 import FollowedCommunities from "./pages/FollowedCommunities/FollowedCommunities";
+import OrganizedEvents from "./pages/OrganizedEvents";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ const EventStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Etkinlikler " component={First} />
+      <Stack.Screen name="Etkinlik" component={EventDetail} />
       <Stack.Screen name="Etkinlik Oluştur" component={CreateEvent} />
     </Stack.Navigator>
   )
@@ -30,6 +32,7 @@ const CommunityStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Topluluklar" component={Communities} />
+      <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
     </Stack.Navigator>
   )
 }
@@ -68,6 +71,9 @@ const App = () => {
         <Stack.Screen name="Takip Ettiğim Topluluklar" component={FollowedCommunities} />
         <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
         <Stack.Screen name="Etkinlik" component={EventDetail} />
+        <Stack.Screen name="Etkinlikler" component={First} />
+        <Stack.Screen name="Organized Events" component={OrganizedEvents} />
+
 
 
       </Stack.Navigator>

@@ -12,7 +12,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 const EventDetail = (props) => {
-    const [participationState, setParticipationState] = useState(props.route.params.participationState ?? '');
+    const [participationState, setParticipationState] = useState(props.route.params?.participationState ?? '');
+    const [user, setUser] = useState({});
 
     const registerToEvent = async () => {
         try {
@@ -95,7 +96,39 @@ const EventDetail = (props) => {
         }
     };
 
-    useFocusEffect(useCallback(() => setParticipationState(props.route.params.participationState ?? ''), []));
+    const getUser = async () => {
+        const token = await AsyncStorage.getItem('token');
+        const role = await AsyncStorage.getItem('role');
+
+        setUser({ token, role });
+        setParticipationState(props.route.params?.participationState ?? '')
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            getUser();
+        }, [])
+    );
+
+    const generateContent = () => {
+        if (user.role === "Community")
+            return <View>
+                <TouchableOpacity style={styles.card_button} onPress={leaveButtonHandler}>
+                    <Text style={styles.buttonText}>{"Etkinliği Bitir"}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.card_button} onPress={leaveButtonHandler}>
+                    <Text style={styles.buttonText}>{"Etkinliği İptal Et"}</Text>
+                </TouchableOpacity>
+            </View>
+
+        return participationState !== "Participating" ?
+            <TouchableOpacity style={styles.card_button} onPress={registerToEvent}>
+                <Text style={styles.buttonText}>{"Etkinliğe Katıl"}</Text>
+            </TouchableOpacity> :
+            <TouchableOpacity style={styles.card_button} onPress={leaveButtonHandler}>
+                <Text style={styles.buttonText}>{"Ayrıl"}</Text>
+            </TouchableOpacity>
+    }
 
     return (
         <View style={styles.card_container}>
@@ -105,8 +138,8 @@ const EventDetail = (props) => {
             </ImageBackground>
             <View style={styles.card_body}>
                 <View style={styles.card_header}>
-                    <Text style={styles.card_title}>{props.route.params.title}</Text>
-                    <Text style={styles.community}>{props.route.params.eventOf.name}</Text>
+                    <Text style={styles.card_title}>{props.route.params?.title}</Text>
+                    <Text style={styles.community}>{props.route.params?.eventOf?.name}</Text>
                 </View>
 
                 <View style={styles.card_timeLocation}>
@@ -114,18 +147,11 @@ const EventDetail = (props) => {
                     <Text>18.30</Text>
                     <Text>10/06/2022</Text>
                 </View>
-                <Text style={styles.tags}>#kariyer#girişimcilik#gelişim#liderlik</Text>
-                <Text >Lorem Ipsum is simply dummy text of the pstry'
-                    rem Ipsum is simply dummy text of the pstry's standard dummy text ever since the 1500s, when
-                    an unknown printer took a s standard dummy text ever since the 1500s, when
-                    an unknown printer took a galley of type and scrambled it to make a type specimen book.</Text>
-                {participationState !== "Participating" ?
-                    <TouchableOpacity style={styles.card_button} onPress={registerToEvent}>
-                        <Text style={styles.buttonText}>{"Etkinliğe Katıl"}</Text>
-                    </TouchableOpacity> :
-                    <TouchableOpacity style={styles.card_button} onPress={leaveButtonHandler}>
-                        <Text style={styles.buttonText}>{"Ayrıl"}</Text>
-                    </TouchableOpacity>}
+                <Text style={styles.tags}>{props.route.params.tags}</Text>
+                <Text >{props.route.params.description}</Text>
+                {
+                    generateContent()
+                }
             </View>
 
         </View>

@@ -21,18 +21,19 @@ const Card = (props) => {
     const isFirstRun = React.useRef(true);
 
     React.useEffect(() => {
-        if (isFirstRun.current) {
-            if (isLiked) {
-                animation.current.play(66, 66);
+        if (props.likeButtonActive)
+            if (isFirstRun.current) {
+                if (isLiked) {
+                    animation.current.play(66, 66);
+                } else {
+                    animation.current.play(19, 19);
+                }
+                isFirstRun.current = false;
+            } else if (isLiked) {
+                animation.current.play(19, 50);
             } else {
-                animation.current.play(19, 19);
+                animation.current.play(0, 19);
             }
-            isFirstRun.current = false;
-        } else if (isLiked) {
-            animation.current.play(19, 50);
-        } else {
-            animation.current.play(0, 19);
-        }
     }, [isLiked]);
 
     const navigateToDetail = () => {
@@ -63,26 +64,19 @@ const Card = (props) => {
                     autoPlay={false}
                     loop={false}
                 />
-            </TouchableOpacity> : ''}
+            </TouchableOpacity> : <View></View>}
             <ImageBackground style={styles.image} source={{ uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg' }} >
-
-
             </ImageBackground>
             <View style={styles.card_body}>
                 <View style={styles.card_header}>
                     <Text style={styles.card_title}>{props.data.title}</Text>
-                    <Text style={styles.community}> {props.data.eventOf.name}</Text>
+                    <Text style={styles.community}> {props.data.eventOf?.name}</Text>
                 </View>
-
-
                 <Text numberOfLines={2}>{props.data.description}</Text>
                 <View style={styles.card_footer}>
                     <Text>{props.data.date}</Text>
                     <Text>{props.data.location}</Text>
                     <Text>{props.data.tags}</Text>
-
-
-
                 </View>
                 {generateButton()}
             </View>
