@@ -12,7 +12,6 @@ import Logo from '../../assets/images/gktLogo.jpg'
 
 
 const EventDetail = (props) => {
-    console.log(props.route.params.name);
 
     const navigateToDetail = () => {
         props.detail.navigate('eventDetail');

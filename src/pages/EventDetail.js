@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -8,12 +8,95 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const EventDetail = (props) => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
-    console.log(props.route.params);
-    const navigateToDetail = () => {
-        props.detail.navigate('eventDetail');
+const EventDetail = (props) => {
+    const [participationState, setParticipationState] = useState(props.route.params.participationState ?? '');
+
+    const registerToEvent = async () => {
+        try {
+            if (!(await AsyncStorage.getItem('token'))) return props.navigation.navigate("Sign In");
+            if (await AsyncStorage.getItem('role') !== 'Student')
+                console.error('Only students can join');
+
+            const userResponse = await fetch(
+                'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
+                {
+                    headers: {
+                        Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+                    },
+                }
+            );
+            const userJson = await userResponse.json();
+            const userId = userJson.data.id;
+
+            const registerResponse = await fetch(
+                'https://bildir.azurewebsites.net/api/v1/Student/RegisterToEvent',
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${AsyncStorage.getItem('token')}`,
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        eventId: props.route.params.id,
+                        studentId: userId,
+                    }),
+                }
+            );
+
+            const registerJson = await registerResponse.json();
+            if (!registerJson.succeeded)
+                throw new Error(registerJson.message);
+            setParticipationState('Participating');
+        } catch (ex) {
+            console.log(ex);
+        }
     }
+    const leaveButtonHandler = async () => {
+        try {
+            if (!(await AsyncStorage.getItem('token'))) console.error('Not logged in');
+            if (await AsyncStorage.getItem('role') !== 'Student')
+                console.error('Only students can abandon');
+
+            const userResponse = await fetch(
+                'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
+                {
+                    headers: {
+                        Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+                    },
+                }
+            );
+            const userJson = await userResponse.json();
+            const userId = userJson.data.id;
+
+            const abandonResponse = await fetch(
+                'https://bildir.azurewebsites.net/api/v1/Student/AbandonEvent',
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        eventId: props.route.params.id,
+                        studentId: userId,
+                    }),
+                }
+            );
+
+            const abandonJson = await abandonResponse.json();
+            setParticipationState('Abandoned');
+        } catch (ex) {
+            console.log(ex);
+        }
+    };
+
+    useFocusEffect(useCallback(() => setParticipationState(props.route.params.participationState ?? ''), []));
+
     return (
         <View style={styles.card_container}>
             <ImageBackground style={styles.image} source={{ uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg' }} >
@@ -36,10 +119,13 @@ const EventDetail = (props) => {
                     rem Ipsum is simply dummy text of the pstry's standard dummy text ever since the 1500s, when
                     an unknown printer took a s standard dummy text ever since the 1500s, when
                     an unknown printer took a galley of type and scrambled it to make a type specimen book.</Text>
-
-                <TouchableOpacity style={styles.card_button} onPress={navigateToDetail}>
-                    <Text style={styles.buttonText}>Etkinliğe Katıl</Text>
-                </TouchableOpacity>
+                {participationState !== "Participating" ?
+                    <TouchableOpacity style={styles.card_button} onPress={registerToEvent}>
+                        <Text style={styles.buttonText}>{"Etkinliğe Katıl"}</Text>
+                    </TouchableOpacity> :
+                    <TouchableOpacity style={styles.card_button} onPress={leaveButtonHandler}>
+                        <Text style={styles.buttonText}>{"Ayrıl"}</Text>
+                    </TouchableOpacity>}
             </View>
 
         </View>

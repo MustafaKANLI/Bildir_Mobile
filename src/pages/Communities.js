@@ -11,7 +11,6 @@ const Communities = (props) => {
         try {
             const response = await fetch('http://bildir.azurewebsites.net/api/v1/Community');
             const json = await response.json();
-            console.log("community", json.data);
             setData(json.data)
 
         } catch (error) {
@@ -31,7 +30,6 @@ const Communities = (props) => {
 
                 <Input label='Topluluk Ara' />
                 {data.map((d, index) => {
-                    console.log("murat", d);
                     return (<CommunityItem key={index} detail={props.navigation} data={d} />)
                 })}
 

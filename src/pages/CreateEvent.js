@@ -30,10 +30,9 @@ const CreateEvent = () => {
                 })
             });
             const json = await response.json();
-            console.log("bu nedur", json)
 
         } catch (e) {
-            console.log("hata mı var", e)
+            console.error("hata mı var", e)
 
         }
     }
@@ -46,8 +45,6 @@ const CreateEvent = () => {
         };
         ImagePicker.launchImageLibrary(options, response => {
             if (response) {
-                console.log(response.assets[0].uri);
-
                 setPhoto(response.assets[0].uri);
             }
         });

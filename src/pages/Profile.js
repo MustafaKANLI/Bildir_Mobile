@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, Button, ImageBackground, FlatList } from "react-native";
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
+import { useFocusEffect } from '@react-navigation/native';
+import { Text, View, StyleSheet, Button, ImageBackground } from "react-native";
 import Logo from '../../assets/images/bildirLogo.png'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const Profile = (props) => {
 
@@ -10,81 +10,93 @@ const Profile = (props) => {
 
     const getUser = async () => {
         const token = await AsyncStorage.getItem('token');
-        const role = await AsyncStorage.getItem('role');
 
         if (!token) {
             props.navigation.navigate('Sign In');
-
+            return;
         }
-        setUser({ token, role });
-        { console.log("m", await AsyncStorage.getItem('token')) }
+
+        const role = await AsyncStorage.getItem('role');
+
+        const userResponse = await fetch(
+            "https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        const userJson = await userResponse.json();
+
+
+        // console.log("userjson", userJson)
+
+        setUser({ token, role, userJson });
     }
 
-    useEffect(() => { getUser(); return () => { } }, [])
+    useFocusEffect(
+        useCallback(() => {
+            getUser()
+        }, [])
+    );
 
     const signout = async () => {
         try {
+            props.navigation.navigate('Etkinlikler');
+
+
             await AsyncStorage.removeItem('token');
-            const token = await AsyncStorage.getItem('token');
-            if (token === null) {
-                props.navigation.navigate('Sign In');
-            }
-            return true;
+            await AsyncStorage.removeItem('role');
+
+            setUser({})
         }
         catch (exception) {
-            return false;
+            console.error(exception)
         }
+    }
+
+    const signin = () => {
+        props.navigation.navigate('Sign In');
     }
 
 
     return (
-        <View style={styles.container}>
 
+        < View style={styles.container} >
+            {//console.log("userr", user.userJson.data.firstName)
+            }
             <View style={styles.profileInfo}>
                 <View style={styles.head}>
                     <View style={styles.image} >
                         <ImageBackground source={Logo} resizeMode="cover" style={styles.pp} ></ImageBackground>
                     </View>
                     <View style={styles.name}>
-                        <Text style={styles.userName}>Murat Eş</Text>
-                        <Text>murates.tr@gmail.com</Text>
+                        {user.userJson && <View>
+                            <Text style={styles.userName}>{user.userJson?.data.firstName}{user.userJson?.data.lastName}</Text>
+                            <Text>{user.userJson?.data.schoolEmail}</Text>
+                            <Text>{user.userJson?.data.department}</Text>
+                        </View>}
+
                     </View>
 
                 </View>
                 <View style={styles.menu}>
-                    <FlatList
-                        data={[
-                            { key: 'Takip ettiğim topluluklar' },
-                            { key: 'Beğendiğim etkinlikler' },
-                            { key: 'Çıkış yap' },
-                        ]}
-                        renderItem={({ item }) => <Text style={styles.item}>{item.key}</Text>}
-                    />
-                </View>
 
+                </View>
                 {
 
-                    AsyncStorage.getItem('token') ?
+                    user.token ? (
                         <Button
                             onPress={signout}
                             title="Çıkış Yap"
-                            color="#841584" />
-                        : <Button
-                            onPress={signout}
+                            color="#841584" />)
+                        : (<Button
+                            onPress={signin}
                             title="Giriş Yap"
-                            color="#841584" />
-
-
+                            color="#841584" />)
                 }
-                <Button
-                    onPress={signout}
-                    title="Çıkış Yap"
-                    color="#841584" />
-
             </View>
-
-
-        </View>
+        </ View>
     )
 }
 
@@ -122,7 +134,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     name: {
-        marginLeft: 49,
+        marginLeft: 20,
     },
     head: {
         flexDirection: 'row',

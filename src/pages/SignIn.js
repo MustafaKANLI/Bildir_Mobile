@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { Text, View, Image, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from "react-native";
 import Logo from '../../assets/images/bildirLogo.png'
 import Input from '../components/Input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -33,23 +33,27 @@ const SignIn = (props) => {
             });
             const json = await response.json();
 
-            console.log("mrt", json);
-            if (json.data.jwToken) {
-                AsyncStorage.setItem('token', json.data.jwToken);
-                AsyncStorage.setItem('role', json.data.roles[0]);
+            //console.log("json", json.succeeded)
+
+            if (json.succeeded) {
+                await AsyncStorage.setItem('token', json.data.jwToken);
+                await AsyncStorage.setItem('role', json.data.roles[0]);
+
+                props.navigation.navigate('Etkinlikler');
+
             }
 
-            /*AsyncStorage.getItem('token').then((value) => {
-                console.log("token ", value);
-            })*/
-            props.navigation.navigate('HomePage');
         }
         catch (e) {
-            console.log("hata", e)
+            console.error("hata", e)
 
         }
 
     }
+    BackHandler.addEventListener('hardwareBackPress', function () {
+        props.navigation.navigate('Etkinlikler');
+        return true;
+    });
 
     useEffect(() => {
         goToHome();

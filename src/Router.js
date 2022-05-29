@@ -10,6 +10,7 @@ import CommunityDetail from "./pages/CommunityDetail";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import CreateEvent from "./pages/CreateEvent";
+import { navigationRef } from './RootNavigation';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -61,7 +62,7 @@ const App = () => {
 
 
 
-    <NavigationContainer >
+    <NavigationContainer ref={navigationRef} >
       <Stack.Navigator>
         <Stack.Screen name="HomePage" options={{ headerShown: false }} component={HomePage} />
         <Stack.Screen name="Sign In" options={{ headerShown: false }} component={SignIn} />

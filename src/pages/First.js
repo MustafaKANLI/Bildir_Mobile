@@ -1,28 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ScrollView, Text, Button, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import Card from "../components/Card/Card";
 import Input from "../components/Input/";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const First = (props) => {
-    const [data, setData] = useState([]);
+    const [events, setEvents] = useState([]);
 
-    const getMovies = async () => {
+    const getEvents = async () => {
         try {
-            const response = await fetch('http://bildir.azurewebsites.net/api/v1/Event');
-            const json = await response.json();
-            console.log("fatih", json.data);
-            setData(json.data)
+            let participations = null;
+            if (await AsyncStorage.getItem('role') === 'Student') {
+                const userResponse = await fetch(
+                    'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+                        },
+                    }
+                );
+                const userJson = await userResponse.json();
+                participations = userJson?.data?.participatedEvents;
+            }
 
+            const response = await fetch(
+                'https://bildir.azurewebsites.net/api/v1/Event'
+            );
+
+            const data = await response.json();
+            let mappedEvents = data.data;
+
+            if (participations)
+                mappedEvents = data.data.map((e) => {
+                    let foundEvent = participations.find((p) => p.id === e.id);
+                    if (foundEvent) e.participationState = foundEvent.participationState;
+                    return e;
+                });
+
+            setEvents(mappedEvents);
         } catch (error) {
             console.error(error);
         }
 
     }
-    useEffect(() => {
-        getMovies();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getEvents()
+        }, [])
+    );
+
 
 
 
@@ -40,8 +68,8 @@ const First = (props) => {
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic">
                 <Input label='Etkinlik ara' />
-                {data.map((d, index) => {
-                    console.log("murat", d);
+                {events.map((d, index) => {
+
                     return (< Card key={index} detail={props.navigation} data={d} />)
                 })}
             </ScrollView>
