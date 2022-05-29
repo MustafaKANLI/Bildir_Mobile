@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Card = (props) => {
     const [isLiked, setIsLiked] = useState(false);

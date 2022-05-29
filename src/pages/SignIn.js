@@ -4,7 +4,6 @@ import Logo from '../../assets/images/bildirLogo.png'
 import Input from '../components/Input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 /*
 {
   "email": "20190808043@ogr.akdeniz.edu.tr",
@@ -33,20 +32,15 @@ const SignIn = (props) => {
             });
             const json = await response.json();
 
-            //console.log("json", json.succeeded)
-
             if (json.succeeded) {
                 await AsyncStorage.setItem('token', json.data.jwToken);
                 await AsyncStorage.setItem('role', json.data.roles[0]);
 
                 props.navigation.navigate('Etkinlikler');
-
             }
-
         }
         catch (e) {
             console.error("hata", e)
-
         }
 
     }
@@ -87,8 +81,6 @@ const SignIn = (props) => {
             <Text style={styles.bottomText} onPress={goToSignUp}>
                 Yeni hesap oluştur
             </Text>
-
-
         </View>
     )
 }

@@ -1,8 +1,6 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from './FollowedCommunities.style'
-import Card from '../../components/Card/Card';
 import CommunityItem from '../../components/CommunityItem/CommunityItem';
 
 const FollowedCommunities = (props) => {

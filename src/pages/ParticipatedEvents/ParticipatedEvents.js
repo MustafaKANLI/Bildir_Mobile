@@ -1,9 +1,7 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import React, { useState, useCallback } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from './ParticipatedEvents.style'
 import Card from '../../components/Card/Card'
-import Input from '../../components/Input'
 import { useFocusEffect } from '@react-navigation/native';
 
 

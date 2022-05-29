@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Fragment } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import { Text, View, StyleSheet, Button, ImageBackground } from "react-native";
 import Logo from '../../assets/images/bildirLogo.png'
@@ -67,8 +67,6 @@ const Profile = (props) => {
     return (
 
         < View style={styles.container} >
-            {//console.log("userr", user.userJson.data.firstName)
-            }
             <View style={styles.profileInfo}>
                 <View style={styles.head}>
                     <View style={styles.image} >
