@@ -10,7 +10,6 @@ const Profile = (props) => {
 
     const getUser = async () => {
         const token = await AsyncStorage.getItem('token');
-        console.log("bu bir tokendir", token)
 
         if (!token) {
             props.navigation.navigate('Sign In');
@@ -88,7 +87,7 @@ const Profile = (props) => {
                 <View style={styles.menu}>
                     <Button
                         onPress={participated}
-                        title="Katılacağım Etkinlikler"
+                        title="Katıldığım Etkinlikler"
                         color="#841584" />
                     <Button
                         onPress={followedCommunities}

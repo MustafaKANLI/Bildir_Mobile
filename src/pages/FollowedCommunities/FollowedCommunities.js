@@ -1,9 +1,11 @@
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './FollowedCommunities.style'
+import Card from '../../components/Card/Card';
+import CommunityItem from '../../components/CommunityItem/CommunityItem';
 
-const FollowedCommunities = () => {
+const FollowedCommunities = (props) => {
 
     const [user, setUser] = useState({})
 
@@ -29,17 +31,14 @@ const FollowedCommunities = () => {
 
     return (
         <View>
-            {console.log("ne geliyor", user.userJson?.data.followedCommunities)}
-            {user.userJson?.data.followedCommunities.map((community) => {
-                console.log("bu bir com", community)
-                return (
-                    <View style={styles.container}>
-                        <Text style={styles.title}>{community.name}</Text>
-                        <Text>{community.email}</Text>
-                        <Text>{community.description}</Text>
-                    </View>
-                )
-            })}
+
+            <ScrollView
+                contentInsetAdjustmentBehavior="automatic">
+                {user.userJson?.data.followedCommunities.map((community, index) => {
+
+                    return (< CommunityItem key={index} detail={props.navigation} data={community} />)
+                })}
+            </ScrollView>
         </View>
     )
 }

@@ -1,9 +1,14 @@
-import { View, Text } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, ScrollView } from 'react-native'
+import React, { useState, useCallback } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './ParticipatedEvents.style'
+import Card from '../../components/Card/Card'
+import Input from '../../components/Input'
+import { useFocusEffect } from '@react-navigation/native';
 
-const ParticipatedEvents = () => {
+
+
+const ParticipatedEvents = (props) => {
 
     const [user, setUser] = useState({})
 
@@ -20,32 +25,22 @@ const ParticipatedEvents = () => {
         );
         const userJson = await userResponse.json();
 
-        console.log("followed token", userJson.data.followedCommunities)
-
-
         setUser({ userJson });
 
     }
-    useEffect(() => {
-        getUser();
-    }, []);
+    useFocusEffect(
+        useCallback(() => { getUser() }, [])
+    );
 
     return (
         <View>
-            {console.log("userrr", user)}
-            {user.userJson?.data.participatedEvents.map((events) => {
-                console.log("bu bir com", events.title)
-                return (
-                    <View style={styles.container}>
-                        <Text style={styles.title}>{events.title}</Text>
-                        <Text>
-                            {events.description}
-                        </Text>
-                        <Text>Konum: {events.location}</Text>
-                        <Text>Tarih: {events.date}</Text>
-                    </View>
-                )
-            })}
+            <ScrollView
+                contentInsetAdjustmentBehavior="automatic">
+                {user.userJson?.data.participatedEvents.map((event, index) => {
+                    if (event.participationState === "Participating")
+                        return (< Card key={index} detail={props.navigation} likeButtonActive={true} data={event} />)
+                })}
+            </ScrollView>
         </View>
     )
 }

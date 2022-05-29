@@ -8,10 +8,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const First = (props) => {
     const [events, setEvents] = useState([]);
+    const [user, setUser] = useState({});
+
+    const getUser = async () => {
+        const token = await AsyncStorage.getItem('token');
+        const role = await AsyncStorage.getItem('role');
+
+        setUser({ token, role });
+    }
+
+    const getData = async () => {
+        await getUser();
+        await getEvents();
+    }
 
     const getEvents = async () => {
         try {
             let participations = null;
+            let followedCommunities = null;
             if (await AsyncStorage.getItem('role') === 'Student') {
                 const userResponse = await fetch(
                     'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
@@ -23,6 +37,7 @@ const First = (props) => {
                 );
                 const userJson = await userResponse.json();
                 participations = userJson?.data?.participatedEvents;
+                followedCommunities = userJson?.data?.followedCommunities;
             }
 
             const response = await fetch(
@@ -37,7 +52,21 @@ const First = (props) => {
                     let foundEvent = participations.find((p) => p.id === e.id);
                     if (foundEvent) e.participationState = foundEvent.participationState;
                     return e;
-                });
+                }).map((e) => {
+                    let foundCommunity = followedCommunities.find((c) => c.id === e.eventOf.id);
+                    if (foundCommunity) e.eventOfFollowedCommunity = true;
+                    else e.eventOfFollowedCommunity = false;
+                    return e;
+                })
+                    .sort((e1, e2) => {
+                        if (e1.state === "Active" && e2.state !== "Active") return -1;
+                        else if (e1.state !== "Active" && e2.state === "Active") return 1;
+                        else if (e1.state === "Active" && e2.state === "Active") {
+                            if (e1.eventOfFollowedCommunity && !e2.eventOfFollowedCommunity) return -1;
+                            else if (!e1.eventOfFollowedCommunity && e2.eventOfFollowedCommunity) return 1;
+                            else return 0;
+                        }
+                    });
 
             setEvents(mappedEvents);
         } catch (error) {
@@ -47,7 +76,7 @@ const First = (props) => {
     }
     useFocusEffect(
         useCallback(() => {
-            getEvents()
+            getData()
         }, [])
     );
 
@@ -70,7 +99,7 @@ const First = (props) => {
                 <Input label='Etkinlik ara' />
                 {events.map((d, index) => {
 
-                    return (< Card key={index} detail={props.navigation} data={d} />)
+                    return (< Card key={index} detail={props.navigation} likeButtonActive={true} data={d} user={user} />)
                 })}
             </ScrollView>
 

@@ -8,11 +8,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Card = (props) => {
-
-
-
     const [isLiked, setIsLiked] = useState(false);
 
 
@@ -41,9 +39,24 @@ const Card = (props) => {
     const navigateToDetail = () => {
         props.detail.navigate('Etkinlik', props.data);
     }
+
+    const generateButton = () => {
+        if (props.data.state === "Active")
+            return <TouchableOpacity style={styles.card_button} onPress={navigateToDetail}>
+                <Text style={styles.buttonText}>Detaylar</Text>
+            </TouchableOpacity>
+        else if (props.data.state === "Canceled")
+            return <TouchableOpacity style={styles.card_button}>
+                <Text style={styles.buttonText}>Etkinlik İptal Edildi</Text>
+            </TouchableOpacity>
+        else if (props.data.state === "Ended")
+            return <TouchableOpacity style={styles.card_button}>
+                <Text style={styles.buttonText}>Etkinlik Sona Erdi</Text>
+            </TouchableOpacity>
+    }
     return (
         <View style={styles.card_container}>
-            <TouchableOpacity onPress={like} style={styles.lottieContainer}>
+            {props.likeButtonActive === true ? <TouchableOpacity onPress={like} style={styles.lottieContainer}>
                 <LottieView
                     ref={animation}
                     style={styles.heartLottie}
@@ -51,7 +64,7 @@ const Card = (props) => {
                     autoPlay={false}
                     loop={false}
                 />
-            </TouchableOpacity>
+            </TouchableOpacity> : ''}
             <ImageBackground style={styles.image} source={{ uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg' }} >
 
 
@@ -63,7 +76,7 @@ const Card = (props) => {
                 </View>
 
 
-                <Text numberOfLines={2}>{props.data.eventOf.description}</Text>
+                <Text numberOfLines={2}>{props.data.description}</Text>
                 <View style={styles.card_footer}>
                     <Text>{props.data.date}</Text>
                     <Text>{props.data.location}</Text>
@@ -72,9 +85,7 @@ const Card = (props) => {
 
 
                 </View>
-                <TouchableOpacity style={styles.card_button} onPress={navigateToDetail}>
-                    <Text style={styles.buttonText}>Detaylar</Text>
-                </TouchableOpacity>
+                {generateButton()}
             </View>
 
         </View>

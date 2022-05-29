@@ -21,7 +21,6 @@ const EventStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Etkinlikler " component={First} />
-      <Stack.Screen name="Etkinlik" component={EventDetail} />
       <Stack.Screen name="Etkinlik Oluştur" component={CreateEvent} />
     </Stack.Navigator>
   )
@@ -31,7 +30,6 @@ const CommunityStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Topluluklar" component={Communities} />
-      <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
     </Stack.Navigator>
   )
 }
@@ -40,18 +38,18 @@ const CommunityStack = () => {
 
 const HomePage = () => {
   return (
-    <Tab.Navigator tabBarOptions={{
-      activeTintColor: '#fff',
-      inactiveTintColor: 'lightgray',
-      activeBackgroundColor: '#E20576',
-      inactiveBackgroundColor: '#b0045c',
-      style: {
+    <Tab.Navigator screenOptions={{
+      tabBarActiveTintColor: '#fff',
+      tabBarInactiveTintColor: 'lightgray',
+      tabBarActiveBackgroundColor: '#E20576',
+      tabBarInactiveBackgroundColor: '#b0045c',
+      tabBarStyle: {
         backgroundColor: '#CE4418',
         paddingBottom: 3
       }
     }}>
-      <Tab.Screen name="Etkinlikler" options={{ headerShown: false }} component={EventStack} />
-      <Tab.Screen name="Topluluklar" options={{ headerShown: false }} component={CommunityStack} />
+      <Tab.Screen name="EtkinliklerTab" options={{ headerShown: false, title: "Etkinlikler" }} component={EventStack} />
+      <Tab.Screen name="TopluluklarTab" options={{ headerShown: false, title: "Topluluklar" }} component={CommunityStack} />
       <Tab.Screen name="Profil" component={Profile} />
     </Tab.Navigator>
   )
@@ -68,6 +66,10 @@ const App = () => {
         <Stack.Screen name="Sign Up" options={{ headerShown: false }} component={SignUp} />
         <Stack.Screen name="Katıldığım Etkinlikler" component={ParticipatedEvents} />
         <Stack.Screen name="Takip Ettiğim Topluluklar" component={FollowedCommunities} />
+        <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
+        <Stack.Screen name="Etkinlik" component={EventDetail} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   )

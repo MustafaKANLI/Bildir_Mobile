@@ -11,7 +11,7 @@ import {
 import Logo from '../../assets/images/gktLogo.jpg'
 
 
-const EventDetail = (props) => {
+const CommunityDetail = (props) => {
 
     const navigateToDetail = () => {
         props.detail.navigate('eventDetail');
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EventDetail
+export default CommunityDetail
