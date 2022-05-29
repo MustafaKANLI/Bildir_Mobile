@@ -11,6 +11,8 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import CreateEvent from "./pages/CreateEvent";
 import { navigationRef } from './RootNavigation';
+import ParticipatedEvents from "./pages/ParticipatedEvents/ParticipatedEvents";
+import FollowedCommunities from "./pages/FollowedCommunities/FollowedCommunities";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -59,14 +61,13 @@ const HomePage = () => {
 
 const App = () => {
   return (
-
-
-
     <NavigationContainer ref={navigationRef} >
       <Stack.Navigator>
         <Stack.Screen name="HomePage" options={{ headerShown: false }} component={HomePage} />
         <Stack.Screen name="Sign In" options={{ headerShown: false }} component={SignIn} />
         <Stack.Screen name="Sign Up" options={{ headerShown: false }} component={SignUp} />
+        <Stack.Screen name="Katıldığım Etkinlikler" component={ParticipatedEvents} />
+        <Stack.Screen name="Takip Ettiğim Topluluklar" component={FollowedCommunities} />
       </Stack.Navigator>
     </NavigationContainer>
   )

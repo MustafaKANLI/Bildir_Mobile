@@ -7,7 +7,7 @@ import Input from "../components/Input/";
 const Communities = (props) => {
     const [data, setData] = useState([]);
 
-    const getMovies = async () => {
+    const getCommunities = async () => {
         try {
             const response = await fetch('http://bildir.azurewebsites.net/api/v1/Community');
             const json = await response.json();
@@ -19,7 +19,7 @@ const Communities = (props) => {
 
     }
     useEffect(() => {
-        getMovies();
+        getCommunities();
     }, []);
 
 

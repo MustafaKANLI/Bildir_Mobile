@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { ScrollView, Text, Button, View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useCallback } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import Card from "../components/Card/Card";
 import Input from "../components/Input/";

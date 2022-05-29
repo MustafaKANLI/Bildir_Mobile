@@ -10,6 +10,7 @@ const Profile = (props) => {
 
     const getUser = async () => {
         const token = await AsyncStorage.getItem('token');
+        console.log("bu bir tokendir", token)
 
         if (!token) {
             props.navigation.navigate('Sign In');
@@ -27,9 +28,6 @@ const Profile = (props) => {
             }
         );
         const userJson = await userResponse.json();
-
-
-        // console.log("userjson", userJson)
 
         setUser({ token, role, userJson });
     }
@@ -59,6 +57,13 @@ const Profile = (props) => {
         props.navigation.navigate('Sign In');
     }
 
+    const participated = () => {
+        props.navigation.navigate('Katıldığım Etkinlikler');
+    }
+    const followedCommunities = () => {
+        props.navigation.navigate('Takip Ettiğim Topluluklar');
+    }
+
 
     return (
 
@@ -81,20 +86,27 @@ const Profile = (props) => {
 
                 </View>
                 <View style={styles.menu}>
-
+                    <Button
+                        onPress={participated}
+                        title="Katılacağım Etkinlikler"
+                        color="#841584" />
+                    <Button
+                        onPress={followedCommunities}
+                        title="Takip ettiğim Topluluklar"
+                        color="#841584" />
+                    {
+                        user.token ? (
+                            <Button
+                                onPress={signout}
+                                title="Çıkış Yap"
+                                color="#841584" />)
+                            : (<Button
+                                onPress={signin}
+                                title="Giriş Yap"
+                                color="#841584" />)
+                    }
                 </View>
-                {
 
-                    user.token ? (
-                        <Button
-                            onPress={signout}
-                            title="Çıkış Yap"
-                            color="#841584" />)
-                        : (<Button
-                            onPress={signin}
-                            title="Giriş Yap"
-                            color="#841584" />)
-                }
             </View>
         </ View>
     )
@@ -114,7 +126,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     menu: {
-        marginTop: 40,
+        height: 150,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        marginTop: 50,
     },
     profileInfo: {
         marginTop: 16,
