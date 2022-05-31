@@ -243,8 +243,8 @@ const EventDetail = props => {
         </View>
 
         <View style={styles.card_timeLocation}>
-          <Text>props.route.params?.location</Text>
-          <Text>props.route.params?.date</Text>
+          <Text>{props.route.params?.location}</Text>
+          <Text>{props.route.params?.date}</Text>
         </View>
         <Text style={styles.tags}>{props.route.params?.tags}</Text>
         <Text>{props.route.params.description}</Text>

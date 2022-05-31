@@ -1,4 +1,5 @@
 import React from 'react';
+import View from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -14,6 +15,7 @@ import {navigationRef} from './RootNavigation';
 import ParticipatedEvents from './pages/ParticipatedEvents/ParticipatedEvents';
 import FollowedCommunities from './pages/FollowedCommunities/FollowedCommunities';
 import OrganizedEvents from './pages/OrganizedEvents';
+import Toast from 'react-native-toast-message';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,37 +69,40 @@ const HomePage = () => {
 
 const App = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="HomePage"
-          options={{headerShown: false}}
-          component={HomePage}
-        />
-        <Stack.Screen
-          name="Sign In"
-          options={{headerShown: false}}
-          component={SignIn}
-        />
-        <Stack.Screen
-          name="Sign Up"
-          options={{headerShown: false}}
-          component={SignUp}
-        />
-        <Stack.Screen
-          name="Katıldığım Etkinlikler"
-          component={ParticipatedEvents}
-        />
-        <Stack.Screen
-          name="Takip Ettiğim Topluluklar"
-          component={FollowedCommunities}
-        />
-        <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
-        <Stack.Screen name="Etkinlik" component={EventDetail} />
-        <Stack.Screen name="Etkinlikler" component={First} />
-        <Stack.Screen name="Organized Events" component={OrganizedEvents} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer ref={navigationRef}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="HomePage"
+            options={{headerShown: false}}
+            component={HomePage}
+          />
+          <Stack.Screen
+            name="Sign In"
+            options={{headerShown: false}}
+            component={SignIn}
+          />
+          <Stack.Screen
+            name="Sign Up"
+            options={{headerShown: false}}
+            component={SignUp}
+          />
+          <Stack.Screen
+            name="Katıldığım Etkinlikler"
+            component={ParticipatedEvents}
+          />
+          <Stack.Screen
+            name="Takip Ettiğim Topluluklar"
+            component={FollowedCommunities}
+          />
+          <Stack.Screen name="Topluluk Sayfası" component={CommunityDetail} />
+          <Stack.Screen name="Etkinlik" component={EventDetail} />
+          <Stack.Screen name="Etkinlikler" component={First} />
+          <Stack.Screen name="Organized Events" component={OrganizedEvents} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 };
 export default App;

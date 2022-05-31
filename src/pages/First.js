@@ -10,6 +10,7 @@ import Card from '../components/Card/Card';
 import Input from '../components/Input/';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const First = props => {
   const [events, setEvents] = useState([]);
@@ -125,12 +126,12 @@ const First = props => {
   // }
 
   const createEvent = () => {
-    props.navigation.navigate('Etkinlik Oluştur');
+    props.navigation.navigate('Etkinlik Oluştur', user);
   };
 
   return (
     <View style={styles.container}>
-      {user.Role === 'Community' && (
+      {user.role === 'Community' && (
         <TouchableOpacity style={styles.createEvent} onPress={createEvent}>
           <Text style={styles.createEventText}>+</Text>
         </TouchableOpacity>
