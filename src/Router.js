@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator();
 const EventStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Etkinlikler " component={First} />
+      <Stack.Screen name="Etkinlikler" component={First} />
       <Stack.Screen name="Etkinlik" component={EventDetail} />
       <Stack.Screen name="Etkinlik Oluştur" component={CreateEvent} />
     </Stack.Navigator>

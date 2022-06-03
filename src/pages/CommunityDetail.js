@@ -141,14 +141,20 @@ const CommunityDetail = props => {
     <View style={styles.card_container}>
       <ImageBackground
         style={styles.image}
-        source={{
-          uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg',
-        }}></ImageBackground>
+        source={
+          props.route.params.backgroundImage
+            ? {
+                uri: `https://bildir.azurewebsites.net/${props.route.params.backgroundImage.path}`,
+              }
+            : {
+                uri: 'https://www.china-admissions.com/wp-content/uploads/2021/06/Divi-Community-Update-May-2020-scaled-1.jpeg',
+              }
+        }></ImageBackground>
 
       <View style={styles.card_body}>
         <View style={styles.card_header}>
           <Text style={styles.card_title}>{props.route.params.name}</Text>
-          <Image style={styles.communityLogo} source={Logo}></Image>
+          {/* <Image style={styles.communityLogo} source={Logo}></Image> */}
         </View>
 
         {props.route.params.followers && (

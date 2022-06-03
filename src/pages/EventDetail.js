@@ -6,10 +6,12 @@ import {
   View,
   ImageBackground,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
+import {SliderBox} from 'react-native-image-slider-box';
 
 const EventDetail = props => {
   const [participationState, setParticipationState] = useState(
@@ -228,29 +230,44 @@ const EventDetail = props => {
   };
 
   return (
-    <View style={styles.card_container}>
-      <ImageBackground
-        style={styles.image}
-        source={{
-          uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg',
-        }}></ImageBackground>
-      <View style={styles.card_body}>
-        <View style={styles.card_header}>
-          <Text style={styles.card_title}>{props.route.params?.title}</Text>
-          <Text style={styles.community}>
-            {props.route.params?.eventOf?.name}
-          </Text>
-        </View>
+    <ScrollView>
+      <View style={styles.card_container}>
+        <ImageBackground
+          style={styles.image}
+          source={
+            props.route.params.images.length >= 1
+              ? {
+                  uri: `https://bildir.azurewebsites.net/${props.route.params.images[0].path}`,
+                }
+              : {
+                  uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg',
+                }
+          }></ImageBackground>
+        <View style={styles.card_body}>
+          <View style={styles.card_header}>
+            <Text style={styles.card_title}>{props.route.params?.title}</Text>
+            <Text style={styles.community}>
+              {props.route.params?.eventOf?.name}
+            </Text>
+          </View>
 
-        <View style={styles.card_timeLocation}>
-          <Text>{props.route.params?.location}</Text>
-          <Text>{props.route.params?.date}</Text>
+          <View style={styles.card_timeLocation}>
+            <Text>{props.route.params?.location}</Text>
+            <Text>{props.route.params?.date}</Text>
+          </View>
+          <Text style={styles.tags}>{props.route.params?.tags}</Text>
+          <Text>{props.route.params.description}</Text>
+
+          {generateContent()}
         </View>
-        <Text style={styles.tags}>{props.route.params?.tags}</Text>
-        <Text>{props.route.params.description}</Text>
-        {generateContent()}
+        <SliderBox
+          style={styles.images}
+          images={props.route.params.images.map(
+            i => `https://bildir.azurewebsites.net/${i.path}`,
+          )}
+        />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -279,6 +296,10 @@ const styles = StyleSheet.create({
   },
   image: {
     height: Dimensions.get('window').height / 4,
+  },
+  images: {
+    width: Dimensions.get('window').width * 0.95,
+    height: 200,
   },
   card_timeLocation: {
     flexDirection: 'row',

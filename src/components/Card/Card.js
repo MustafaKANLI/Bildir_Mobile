@@ -59,6 +59,7 @@ const Card = props => {
         </TouchableOpacity>
       );
   };
+
   return (
     <View style={styles.card_container}>
       {props.likeButtonActive === true ? (
@@ -76,9 +77,15 @@ const Card = props => {
       )}
       <ImageBackground
         style={styles.image}
-        source={{
-          uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg',
-        }}></ImageBackground>
+        source={
+          props.data.images.length >= 1
+            ? {
+                uri: `https://bildir.azurewebsites.net/${props.data.images[0].path}`,
+              }
+            : {
+                uri: 'https://ironcodestudio.com/wp-content/uploads/2015/03/css-remove-horizontal-scrollbar.jpg',
+              }
+        }></ImageBackground>
       <View style={styles.card_body}>
         <View style={styles.card_header}>
           <Text style={styles.card_title}>{props.data.title}</Text>

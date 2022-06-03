@@ -85,6 +85,13 @@ const First = props => {
             }
           });
 
+      if (!user.token) {
+        mappedEvents = mappedEvents.sort((e1, e2) => {
+          if (e1.state === 'Active' && e2.state !== 'Active') return -1;
+          else if (e1.state !== 'Active' && e2.state === 'Active') return 1;
+          else if (e1.state === 'Active' && e2.state === 'Active') return 0;
+        });
+      }
       setEvents(mappedEvents);
     } catch (error) {
       console.error(error);
@@ -99,31 +106,6 @@ const First = props => {
   const onSearchChange = e => {
     setSearch(e);
   };
-
-  //     filter()
-  // }
-  // const temp = events
-
-  // console.log("sörc", search === "")
-
-  // const filter = async () => {
-  //     if (search === "") {
-  //         console.log("gir artık")
-  //     }
-  //     if (search !== "") {
-  //         const filteredData =
-  //             events.filter((event) => {
-  //                 console.log("ews", event.title.toLowerCase().startsWith(search))
-
-  //                 return event.title.toLowerCase().startsWith(search)
-  //             })
-  //         //await setEvents(filteredData)
-  //     }
-  //     else {
-  //         console.log("sıfırla")
-  //         //await setEvents(temp)
-  //     }
-  // }
 
   const createEvent = () => {
     props.navigation.navigate('Etkinlik Oluştur', user);
