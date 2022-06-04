@@ -8,19 +8,24 @@ const FollowedCommunities = props => {
   const [user, setUser] = useState({});
 
   const getUser = async () => {
-    const token = await AsyncStorage.getItem('token');
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
 
-    const userResponse = await fetch(
-      'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const userResponse = await fetch(
+        'https://bildir.azurewebsites.net/api/v1/Student/CurrentlyLoggedIn',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    );
-    const userJson = await userResponse.json();
+      );
+      const userJson = await userResponse.json();
 
-    setUser({userJson});
+      setUser({userJson});
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useFocusEffect(
