@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Logo from '../../assets/images/bildirLogo.png';
 import Input from '../components/Input';
+import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /*
@@ -41,12 +42,20 @@ const SignIn = props => {
       );
       const json = await response.json();
 
-      if (json.succeeded) {
-        await AsyncStorage.setItem('token', json.data.jwToken);
-        await AsyncStorage.setItem('role', json.data.roles[0]);
+      if (!json.succeeded) {
+        Toast.show({
+          type: 'error',
+          text1: 'Giriş yapılamadı',
+          text2: `${json.message || 'Hata'}`,
+        });
 
-        props.navigation.navigate('EtkinliklerTab');
+        throw new Error(json.message);
       }
+
+      await AsyncStorage.setItem('token', json.data.jwToken);
+      await AsyncStorage.setItem('role', json.data.roles[0]);
+
+      props.navigation.navigate('EtkinliklerTab');
     } catch (e) {
       console.error('hata', e);
     }
@@ -56,9 +65,7 @@ const SignIn = props => {
     return true;
   });
 
-  useEffect(() => {
-    goToHome();
-  }, []);
+  useEffect(() => {}, []);
 
   const goToSignUp = () => {
     props.navigation.navigate('Sign Up');

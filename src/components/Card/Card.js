@@ -78,7 +78,7 @@ const Card = props => {
       <ImageBackground
         style={styles.image}
         source={
-          props.data.images.length >= 1
+          props.data.images?.length >= 1
             ? {
                 uri: `https://bildir.azurewebsites.net/${props.data.images[0].path}`,
               }
@@ -93,7 +93,7 @@ const Card = props => {
         </View>
         <Text numberOfLines={2}>{props.data.description}</Text>
         <View style={styles.card_footer}>
-          <Text>{props.data.date}</Text>
+          <Text>{props.data.date.split('T')[0]}</Text>
           <Text>{props.data.location}</Text>
           <Text>{props.data.tags}</Text>
         </View>
