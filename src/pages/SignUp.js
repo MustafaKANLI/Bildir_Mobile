@@ -193,7 +193,6 @@ const SignUp = props => {
           },
         );
         const uploadJson = await uploadResponse.json();
-        console.log(uploadJson);
       }
 
       Toast.show({

@@ -26,9 +26,9 @@ const CreateEvent = props => {
 
   const createEvent = async () => {
     if (
-      !title.trim() &&
-      !description.trim() &&
-      !location.trim() &&
+      !title.trim() ||
+      !description.trim() ||
+      !location.trim() ||
       !tags.trim()
     ) {
       Toast.show({
